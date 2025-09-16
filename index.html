@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Completo de Atendimento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cool Blues (Sky, Indigo, Blue) and Neutrals (Slate, Gray) -->
+    <!-- Application Structure Plan: A estrutura é um dashboard de página única, otimizado para a visualização e comparação de múltiplos atendimentos. A arquitetura é dividida em seções: um cabeçalho com o título principal, uma seção de cartões que resume as três ligações, e uma área de análise detalhada com abas para cada chamada, permitindo que o usuário navegue entre elas sem rolar a página. Uma visualização de dados (gráfico de barras) compara a duração das ligações e um gráfico de rosca mostra a classificação dos tickets. Essa estrutura foi escolhida para transformar um relatório de texto em uma ferramenta de análise interativa, facilitando a comparação e a extração de insights de forma intuitiva. -->
+    <!-- Visualization & Content Choices: Resumo de Ligações -> Cartões e Abas Interativas. Objetivo -> Permitir a navegação entre os resumos sem scroll. Viz/Método -> Divs com conteúdo de resumo, ativadas por cliques em botões de abas. Interação -> Botões de abas atualizam o conteúdo da área principal. Relatório de Tickets -> Gráfico de rosca para classificação. Objetivo -> Visualizar a proporção de tipos de tickets (sugestões vs. dúvidas). Viz/Método -> Gráfico de rosca (doughnut chart). Interação -> Tooltips ao passar o mouse. Justificativa -> O layout de abas e os gráficos são ideais para condensar uma grande quantidade de texto e dados, tornando a informação mais acessível. Biblioteca -> Chart.js (Canvas) e JavaScript vanilla para o controle das abas. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            margin: auto;
+            height: 380px;
+        }
+        .tab-button.active {
+            border-bottom: 3px solid #3b82f6; /* blue-500 */
+            color: #1e40af; /* blue-800 */
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto max-w-6xl p-4 sm:p-6 md:p-8">
+
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">Relatório de Análise de Atendimento</h1>
+            <p class="text-slate-500 mt-2">Visão consolidada do desempenho de atendimentos e tickets de Jean.</p>
+        </header>
+
+        <section id="main-metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center">
+                <p class="text-sm font-medium text-slate-500">Média de Duração das Ligações</p>
+                <p class="text-3xl font-bold text-sky-600 mt-1">14min</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center">
+                <p class="text-sm font-medium text-slate-500">Tickets Encaminhados em Setembro</p>
+                <p class="text-3xl font-bold text-indigo-600 mt-1">5</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center">
+                <p class="text-sm font-medium text-slate-500">Resolução na Primeira Chamada</p>
+                <p class="text-3xl font-bold text-emerald-600 mt-1">100%</p>
+            </div>
+        </section>
+
+        <section id="analysis-tabs" class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 mb-10">
+            <div class="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 border-b border-slate-200 mb-6">
+                <button id="tab1-btn" class="tab-button active font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Chamada 1</button>
+                <button id="tab2-btn" class="tab-button font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Chamada 2</button>
+                <button id="tab3-btn" class="tab-button font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Chamada 3</button>
+                <button id="tab4-btn" class="tab-button font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Relatório de Tickets</button>
+            </div>
+
+            <div id="tab-content-container">
+                <div id="tab1" class="tab-content transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Chamada 1: Dúvidas com Shopee</h3>
+                    <p class="text-sm text-slate-500 mb-4">ID: 2870056 | Data: 12/09/2025 | Duração: 16:35 | Ticket: #5163670</p>
+                    <p class="text-slate-600 mb-6">A ligação iniciou com a confirmação de que um ticket para o problema já havia sido aberto. Embora o ticket #5163670 tenha sido criado corretamente, o número não foi informado ao cliente durante a chamada. O esquecimento pode ter ocorrido porque o cliente estava retornando de uma ligação anterior que havia caído.</p>
+                    <h4 class="text-xl font-semibold text-emerald-600 mb-2">Pontos Positivos</h4>
+                    <ul class="list-disc list-inside text-slate-600 mb-6 space-y-2">
+                        <li>Atendimento completo: O problema principal do cliente, que era sobre como enviar os dados da nota fiscal para a Shopee, foi resolvido com sucesso.</li>
+                        <li>Instruções detalhadas: Foi explicado como lançar as contas da nota e o fluxo dos valores no contas a receber.</li>
+                        <li>Solução para impressão: O cliente também recebeu orientações sobre como imprimir as etiquetas de envio.</li>
+                        <li>Resolução eficaz: O cliente confirmou que entendeu o processo, e a ligação foi concluída de forma satisfatória.</li>
+                        <li>Categorização: O ticket foi categorizado corretamente.</li>
+                    </ul>
+                    <h4 class="text-xl font-semibold text-red-600 mb-2">Ponto de Melhoria</h4>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                        <li>Comunicação do ticket: O número do ticket deveria ter sido informado ao cliente para facilitar o acompanhamento futuro.</li>
+                    </ul>
+                </div>
+
+                <div id="tab2" class="tab-content hidden transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Chamada 2: Erro de Rejeição de Nota Fiscal</h3>
+                    <p class="text-sm text-slate-500 mb-4">ID: 2870500 | Data: 12/09/2025 | Duração: 10:12 | Ticket: #5164249</p>
+                    <p class="text-slate-600 mb-6">A ligação começou com a identificação do atendente e do cliente, que já havia aberto um ticket. O cliente, Fábio, estava enfrentando um erro ao tentar emitir uma nota fiscal para exportação, pois o sistema apresentava o código de rejeição 345. Foi feita a busca do CNPJ do cliente e o Jean acessou a nota para análise.</p>
+                    <h4 class="text-xl font-semibold text-emerald-600 mb-2">Pontos Positivos</h4>
+                    <ul class="list-disc list-inside text-slate-600 mb-6 space-y-2">
+                        <li>Identificação do problema: Jean conseguiu identificar a origem do erro, que estava na referência da nota fiscal de origem e em um código de tributação incorreto.</li>
+                        <li>Resolução eficaz: Jean instruiu o cliente a seguir um procedimento passo a passo para corrigir o problema, que incluía a remoção da nota fiscal de referência e a alteração da situação tributária de '40' para '41'.</li>
+                        <li>Resolução do erro: A nota fiscal foi emitida com sucesso após as instruções.</li>
+                        <li>Suporte adicional: O atendente se ofereceu para ajudar a solucionar o problema da segunda nota que o cliente estava tentando emitir.</li>
+                        <li>Protocolos: Todos os protocolos foram seguidos corretamente.</li>
+                        <li>Categorização: O ticket foi categorizado corretamente.</li>
+                    </ul>
+                </div>
+
+                <div id="tab3" class="tab-content hidden transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Chamada 3: Dúvida sobre Produtos em Nota Fiscal</h3>
+                    <p class="text-sm text-slate-500 mb-4">ID: 2863475 | Data: 08/09/2025 | Duração: 15:07 | Ticket: #5155517</p>
+                    <p class="text-slate-600 mb-6">A cliente, Luciana, entrou em contato porque um produto que deveria se chamar "biscuit" estava aparecendo como "biscoito" na pré-visualização da nota fiscal, o que a impedia de prosseguir com a emissão. Além disso, ela tinha uma segunda dúvida sobre a exibição de códigos de barras nas notas.</p>
+                    <h4 class="text-xl font-semibold text-emerald-600 mb-2">Pontos Positivos</h4>
+                    <ul class="list-disc list-inside text-slate-600 mb-6 space-y-2">
+                        <li>Resolução rápida e eficaz: Jean identificou a origem do problema do "biscoito" rapidamente (o tradutor do navegador da cliente), instruindo-a a desativá-lo para que o nome correto aparecesse.</li>
+                        <li>Atendimento a múltiplos problemas: Jean demonstrou paciência e competência ao lidar com a segunda dúvida da cliente sobre a importação de códigos de barras, mesmo que o problema estivesse fora da alçada do suporte.</li>
+                        <li>Comunicação clara: Jean explicou de forma didática que a funcionalidade de exibir o código de barras na nota não era possível e que a API não oferecia essa opção.</li>
+                        <li>Empatia e profissionalismo: Mesmo diante de uma situação complexa sobre a integração de sistemas e a necessidade de um trabalho manual, o atendente manteve a calma, foi transparente e ofereceu o melhor suporte possível.</li>
+                        <li>Protocolos: Todos os protocolos foram seguidos corretamente.</li>
+                        <li>Categorização: O ticket foi categorizado corretamente.</li>
+                    </ul>
+                </div>
+
+                <div id="tab4" class="tab-content hidden transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Relatório de Tickets de Jean</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="chart-container">
+                            <canvas id="ticketsChart"></canvas>
+                        </div>
+                        <div>
+                            <p class="text-slate-600 mb-4">No mês de setembro, Jean encaminhou 5 tickets que foram classificados da seguinte forma:</p>
+                            <ul class="list-disc list-inside text-slate-600 mb-4 space-y-1">
+                                <li>3 tickets foram sugestões para melhoria do sistema.</li>
+                                <li>2 tickets foram dúvidas sobre funcionalidades.</li>
+                            </ul>
+                            <p class="text-slate-600 font-semibold">Qualidade dos Tickets:</p>
+                            <p class="text-slate-600">Todos os tickets foram enviados completos, sem a falta de testes ou informações, demonstrando um processo de documentação rigoroso por parte de Jean.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-blue-900 text-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4">Conclusão Geral</h2>
+            <p class="text-blue-200"> Em geral as ligações do Jean são bem boas, ele tem bastante vontade de ajudar o cliente, demonstrando empatia e pro atividade em resolver a questão do cliente. Acredito que com o tempo ao pegar mais experiência técnica, vai ser uma grande ajuda para todos.</p>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+            const ticketsData = {
+                labels: ['Sugestões', 'Dúvidas'],
+                datasets: [{
+                    label: 'Classificação de Tickets',
+                    data: [3, 2],
+                    backgroundColor: ['#2563eb', '#6b21a8'], /* blue-600, purple-800 */
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            };
+
+            const ticketsChartConfig = {
+                type: 'doughnut',
+                data: ticketsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: "'Inter', sans-serif" }
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: { family: "'Inter', sans-serif" },
+                            titleFont: { family: "'Inter', sans-serif" },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            const ticketsChart = new Chart(
+                document.getElementById('ticketsChart'),
+                ticketsChartConfig
+            );
+
+            function showTab(id) {
+                contents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.getElementById(id).classList.remove('hidden');
+                document.getElementById(id + '-btn').classList.add('active');
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    showTab(this.id.replace('-btn', ''));
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
