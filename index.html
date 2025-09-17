@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Atendimento - Felipe Moura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cool Blues (Sky, Indigo, Blue) and Neutrals (Slate, Gray) -->
+    <!-- Application Structure Plan: A estrutura é um dashboard de página única, otimizado para a visualização e comparação de múltiplos atendimentos. A arquitetura é dividida em seções: um cabeçalho com o título principal, uma seção de cartões que resume as três ligações, e uma área de análise detalhada com abas para cada chamada, permitindo que o usuário navegue entre elas sem rolar a página. Uma visualização de dados (gráfico de barras) compara a duração das ligações e um gráfico de rosca mostra a classificação dos tickets. Essa estrutura foi escolhida para transformar um relatório de texto em uma ferramenta de análise interativa, facilitando a comparação e a extração de insights de forma intuitiva. -->
+    <!-- Visualization & Content Choices: Resumo de Ligações -> Cartões e Abas Interativas. Objetivo -> Permitir a navegação entre os resumos sem scroll. Viz/Método -> Divs com conteúdo de resumo, ativadas por cliques em botões de abas. Interação -> Botões de abas atualizam o conteúdo da área principal. Relatório de Tickets -> Gráfico de rosca para classificação. Objetivo -> Visualizar a proporção de tipos de tickets (sugestões vs. dúvidas). Viz/Método -> Gráfico de rosca (doughnut chart). Interação -> Tooltips ao passar o mouse. Justificativa -> O layout de abas e os gráficos são ideais para condensar uma grande quantidade de texto e dados, tornando a informação mais acessível. Biblioteca -> Chart.js (Canvas) e JavaScript vanilla para o controle das abas. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            margin: auto;
+            height: 380px;
+        }
+        .tab-button.active {
+            border-bottom: 3px solid #3b82f6; /* blue-500 */
+            color: #1e40af; /* blue-800 */
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <div class="container mx-auto max-w-6xl p-4 sm:p-6 md:p-8">
+
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900">Relatório de Análise de Atendimento</h1>
+            <p class="text-slate-500 mt-2">Visão consolidada do desempenho de atendimentos e tickets de Felipe Moura.</p>
+        </header>
+
+        <section id="main-metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center">
+                <p class="text-sm font-medium text-slate-500">Média de Duração das Ligações</p>
+                <p class="text-3xl font-bold text-sky-600 mt-1">13min</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center">
+                <p class="text-sm font-medium text-slate-500">Tickets Encaminhados em Setembro</p>
+                <p class="text-3xl font-bold text-indigo-600 mt-1">6</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 text-center">
+                <p class="text-sm font-medium text-slate-500">Ações de Melhoria</p>
+                <p class="text-3xl font-bold text-yellow-600 mt-1">3</p>
+            </div>
+        </section>
+
+        <section id="analysis-tabs" class="bg-white p-6 rounded-xl shadow-lg border border-slate-200 mb-10">
+            <div class="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 border-b border-slate-200 mb-6">
+                <button id="tab1-btn" class="tab-button active font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Ligação 1</button>
+                <button id="tab2-btn" class="tab-button font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Ligação 2</button>
+                <button id="tab3-btn" class="tab-button font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Ligação 3</button>
+                <button id="tab4-btn" class="tab-button font-semibold px-4 py-2 text-slate-600 focus:outline-none transition-colors duration-200">Relatório de Tickets</button>
+            </div>
+
+            <div id="tab-content-container">
+                <div id="tab1" class="tab-content transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Ligação 1: Dúvida sobre Validação Sintegra e exportação para Bagy</h3>
+                    <p class="text-sm text-slate-500 mb-4">ID: 2870486 | Data: 12/09/2025 | Duração: 15:51 | Ticket: #5164215</p>
+                    <p class="text-slate-600 mb-6">O cliente, Graziele, ligou com um problema de notas fiscais de entrada que estavam com o CFOP incorreto. Além disso, ele tinha dúvidas sobre como exportar produtos para a plataforma da Bagy após o lançamento das notas.</p>
+                    <h4 class="text-xl font-semibold text-emerald-600 mb-2">Pontos Positivos</h4>
+                    <ul class="list-disc list-inside text-slate-600 mb-6 space-y-2">
+                        <li>Identificação do problema: Felipe conseguiu identificar a origem do erro nas notas fiscais, que era a incompatibilidade do CFOP, e orientou o cliente a corrigir o CFOP de 6102 e 6101 para 2102 no qual é um CFOP de entrada.</li>
+                        <li>Resolução eficaz: Felipe demonstrou um profundo conhecimento do sistema ao guiar o cliente em um processo de correção que envolvia estornar o estoque, alterar o CFOP item por item também.</li>
+                        <li>Solução para múltiplos problemas: Além da questão fiscal, o atendente também orientou o cliente sobre como conciliar os produtos na nota fiscal de entrada também e como usar a funcionalidade de Exportar produtos para enviar os produtos para a plataforma da Bagy.</li>
+                        <li>Protocolos: O Felipe seguiu os protocolos corretamente, incluindo a abertura do ticket e a confirmação do número com o cliente.</li>
+                    </ul>
+                    <h4 class="text-xl font-semibold text-red-600 mb-2">Ponto de Melhoria</h4>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                         <li>Categorização do ticket: Como o foco acabou sendo a exportação do produto, a categorização do ticket poderia ter sido para integrações.</li>
+                    </ul>
+                </div>
+
+                 <div id="tab2" class="tab-content hidden transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Ligação 2: Dúvida sobre emissão de nota fiscal com rejeição</h3>
+                    <p class="text-sm text-slate-500 mb-4">ID: 2869503 | Data: 12/09/2025 | Duração: 14:18 | Ticket: #5162950</p>
+                    <p class="text-slate-600 mb-6">A cliente Luiza estava com um problema na emissão de notas fiscais para um cliente novo e precisava de ajuda para alterar o ambiente de testes para o de produção. Ela já havia corrigido a inscrição municipal, mas a nota continuava sendo rejeitada pela Sefaz.</p>
+                    <h4 class="text-xl font-semibold text-emerald-600 mb-2">Pontos Positivos</h4>
+                    <ul class="list-disc list-inside text-slate-600 mb-6 space-y-2">
+                        <li>Abertura do ticket: Felipe seguiu o protocolo corretamente, abrindo o ticket #5162950 e informando o número à cliente.</li>
+                        <li>Suporte técnico: Felipe acessou a conta da cliente via AnyDesk, moveu a nota para o ambiente de produção e tentou a emissão, demonstrando conhecimento técnico e proatividade.</li>
+                        <li>Resolução parcial: Ele diagnosticou corretamente que o erro 203 era uma rejeição da Sefaz e não um problema no sistema Bling.</li>
+                    </ul>
+                    <h4 class="text-xl font-semibold text-red-600 mb-2">Ponto de Melhoria</h4>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                         <li>Informação faltante: Apesar de ter identificado que o problema era com a Sefaz, o atendente não forneceu à cliente a base de conhecimento sobre os "Dados do Bling para credenciamento para emissão de notas na Sefaz Minas Gerais MG". Essa informação é crucial para que a contabilidade da cliente possa fazer o credenciamento e liberar a emissão das notas fiscais.</li>
+                    </ul>
+                </div>
+
+                <div id="tab3" class="tab-content hidden transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Ligação 3: Dúvida sobre emissão de nota fiscal com rejeição</h3>
+                    <p class="text-sm text-slate-500 mb-4">ID: 2866510 | Data: 10/09/2025 | Duração: 11:50 | Ticket: #5159416</p>
+                    <p class="text-slate-600 mb-6">O cliente entrou em contato porque, ao tentar enviar notas fiscais de entrada para a contabilidade, os arquivos chegavam em branco. Ele também não conseguia gerar o PDF das notas, apenas os XMLs.</p>
+                    <h4 class="text-xl font-semibold text-emerald-600 mb-2">Pontos Positivos</h4>
+                    <ul class="list-disc list-inside text-slate-600 mb-6 space-y-2">
+                        <li>Identificação precisa do problema: O atendente diagnosticou corretamente que o problema de arquivos em branco ocorria porque o cliente estava tentando gerar PDFs de notas de entrada. Ele explicou que apenas os XMLs são gerados nesse caso, e que o envio do XML para a contabilidade já é o procedimento correto.</li>
+                        <li>Resolução completa: O atendente não apenas explicou o problema, mas também guiou o cliente para solucionar a dúvida. Ele acessou a conta via AnyDesk, baixou os arquivos XML das notas e os abriu para demonstrar que o conteúdo estava correto, resolvendo a questão da contabilidade.</li>
+                        <li>Atendimento pró-ativo: Durante o suporte, o atendente ofereceu ajuda para outras notas que o cliente estava com problemas, demonstrando proatividade e preocupação em resolver todas as pendências do cliente.</li>
+                        <li>Comunicação clara: O atendente manteve a comunicação clara e didática, mesmo em um assunto técnico como o formato de arquivos fiscais, garantindo que o cliente entendesse a situação.</li>
+                    </ul>
+                    <h4 class="text-xl font-semibold text-red-600 mb-2">Ponto de Melhoria</h4>
+                    <ul class="list-disc list-inside text-slate-600 space-y-2">
+                         <li>Abertura do ticket: O atendente não informou o número do ticket ao cliente, um ponto importante a ser aprimorado para o acompanhamento do atendimento.</li>
+                    </ul>
+                </div>
+
+                <div id="tab4" class="tab-content hidden transition-opacity duration-300">
+                    <h3 class="text-2xl font-semibold mb-4 text-slate-800">Relatório de Tickets de Felipe Moura</h3>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="chart-container">
+                            <canvas id="ticketsChart"></canvas>
+                        </div>
+                        <div>
+                            <p class="text-slate-600 mb-4">No mês de setembro, Felipe Moura encaminhou 6 tickets, sendo eles 0 sugestões e 6 dúvidas, nenhum destes tickets faltou testes ou faltaram informações, todos completos.</p>
+                            <ul class="list-disc list-inside text-slate-600 mb-4 space-y-1">
+                                <li>0 tickets foram sugestões para melhoria do sistema.</li>
+                                <li>6 tickets foram dúvidas sobre funcionalidades.</li>
+                            </ul>
+                            <p class="text-slate-600 font-semibold">Qualidade dos Tickets:</p>
+                            <p class="text-slate-600">Todos os tickets foram enviados completos, sem a falta de testes ou informações, demonstrando um processo de documentação rigoroso por parte de Felipe Moura.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-blue-900 text-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4">Conclusão Geral</h2>
+            <p class="text-blue-200">Após a análise detalhada das ligações, o desempenho de Felipe Moura é notavelmente competente e eficaz. Ele demonstrou um forte conhecimento técnico para solucionar problemas complexos e lidou bem com as demandas dos clientes. O ponto principal a ser aprimorado para ele é a proatividade na comunicação do número do ticket no início da chamada, algo que ocorreu em algumas das ligações analisadas. Além disso, a falha em fornecer a base de conhecimento do credenciamento para a cliente Luiza e a hesitação de Felipe na questão da integração com a Bagy indicam oportunidades de melhoria específicas. No entanto, o progresso técnico é claro, e com a experiência, ele poderá continuar evoluindo para se tornar um atendente ainda mais completo.</p>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab-button');
+            const contents = document.querySelectorAll('.tab-content');
+            const ticketsData = {
+                labels: ['Sugestões (Felipe)', 'Dúvidas (Felipe)'],
+                datasets: [{
+                    label: 'Classificação de Tickets',
+                    data: [0, 6],
+                    backgroundColor: ['#14b8a6', '#6b21a8'],
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 8
+                }]
+            };
+
+            const ticketsChartConfig = {
+                type: 'doughnut',
+                data: ticketsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: "'Inter', sans-serif" }
+                            }
+                        },
+                        tooltip: {
+                            bodyFont: { family: "'Inter', sans-serif" },
+                            titleFont: { family: "'Inter', sans-serif" },
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            const ticketsChart = new Chart(
+                document.getElementById('ticketsChart'),
+                ticketsChartConfig
+            );
+
+            function showTab(id) {
+                contents.forEach(content => {
+                    content.classList.add('hidden');
+                });
+                tabs.forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.getElementById(id).classList.remove('hidden');
+                document.getElementById(id + '-btn').classList.add('active');
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    showTab(this.id.replace('-btn', ''));
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
